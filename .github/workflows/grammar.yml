@@ -45,7 +45,7 @@ jobs:
             ~/.cargo/registry
             ~/.cargo/git
             ~/.cargo/bin
-          key: ${{ runner.os }}-cargo-${{ steps.get-commit-hash.outputs.commit_hash }}
+          key: ${{ runner.os }}-cargo-${{ steps.get-commit-hash.outputs.commit_hash }}-v2
           restore-keys: |
             ${{ runner.os }}-cargo-
 

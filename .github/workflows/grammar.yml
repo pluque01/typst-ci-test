@@ -38,16 +38,16 @@ jobs:
           echo "commit_hash=$COMMIT_HASH" >> $GITHUB_OUTPUT
 
       # Cache Cargo registry and target directories
-      # - name: Cache Cargo dependencies
-      #   uses: actions/cache@v4
-      #   with:
-      #     path: |
-      #       ~/.cargo/registry
-      #       ~/.cargo/git
-      #       ~/.cargo/bin
-      #     key: ${{ runner.os }}-cargo-${{ steps.get-commit-hash.outputs.commit_hash }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-cargo-
+      - name: Cache Cargo dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            ~/.cargo/bin
+          key: ${{ runner.os }}-cargo-${{ steps.get-commit-hash.outputs.commit_hash }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
 
       # Check if the binary is already installed (from cache)
       - name: Check if binary is cached

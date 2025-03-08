@@ -57,15 +57,6 @@
             echo "  - Rust: $(rustc --version)"
             echo "  - Cargo: $(cargo --version)"
             echo "  - Maven: $(mvn --version | head -n1)"
-
-            # Install the grammar checker tool if not already installed
-            if ! command -v ${grammarCheckerPkg} &> /dev/null; then
-              echo "Installing ${grammarCheckerPkg}..."
-              cargo install --git=${grammarCheckerUrl} cli --features=bundle
-            else
-              echo "${grammarCheckerPkg} is already installed"
-            fi
-
             echo ""
             echo "Usage:"
             echo "  - Run grammar check: ${grammarCheckerPkg} check --bundle --main=./path/to/main.typ --options=./path/to/options.json"

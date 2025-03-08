@@ -28,6 +28,37 @@ jobs:
         with:
           fail-mode: true
 
+      # Cache Cargo registry and target directories
+      - name: Cache Cargo dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            ~/.cargo/bin
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-${{ hashFiles('**/Cargo.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
+
+      # Skip installation if already in cache
+      - name: Check for cached binary
+        id: check-binary
+        run: |
+          if command -v typst-languagetool &> /dev/null; then
+            echo "Binary already installed"
+            echo "cached=true" >> $GITHUB_OUTPUT
+          else
+            echo "Binary not found in cache"
+            echo "cached=false" >> $GITHUB_OUTPUT
+          fi
+
+      # Install only if not in cache
+      - name: Install dependencies and grammar checker
+        if: steps.check-binary.outputs.cached != 'true'
+        run: |
+          nix develop --command bash -c "cargo install --git=https://github.com/antonWetzel/typst-languagetool cli --features=bundle"
+
       - name: Run Grammar Check
         run: |
             # Create wrapper script

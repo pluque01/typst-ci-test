@@ -28,6 +28,14 @@ jobs:
         with:
           fail-mode: true
 
+      # Fetch the latest commit hash of the typst-languagetool repository
+      - name: Get latest commit hash
+        id: get-commit-hash
+        run: |
+          REPO_URL="https://github.com/antonWetzel/typst-languagetool"
+          COMMIT_HASH=$(git ls-remote "$REPO_URL" HEAD | cut -f 1)
+          echo "commit_hash=$COMMIT_HASH" >> $GITHUB_OUTPUT
+
       # Cache Cargo registry and target directories
       - name: Cache Cargo dependencies
         uses: actions/cache@v4
@@ -36,51 +44,37 @@ jobs:
             ~/.cargo/registry
             ~/.cargo/git
             ~/.cargo/bin
-            target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-${{ hashFiles('**/Cargo.toml') }}
+          key: ${{ runner.os }}-cargo-${{ steps.get-commit-hash.outputs.commit_hash }}
           restore-keys: |
             ${{ runner.os }}-cargo-
 
-      # Skip installation if already in cache
-      - name: Check for cached binary
-        id: check-binary
-        run: |
-          if command -v typst-languagetool &> /dev/null; then
-            echo "Binary already installed"
-            echo "cached=true" >> $GITHUB_OUTPUT
-          else
-            echo "Binary not found in cache"
-            echo "cached=false" >> $GITHUB_OUTPUT
-          fi
-
-      # Install only if not in cache
+      # Install the grammar checker
       - name: Install dependencies and grammar checker
-        if: steps.check-binary.outputs.cached != 'true'
         run: |
           nix develop --command bash -c "cargo install --git=https://github.com/antonWetzel/typst-languagetool cli --features=bundle"
 
       - name: Run Grammar Check
         run: |
-            # Create wrapper script
-            cat > grammar-check-wrapper.sh << 'EOF'
-            #!/usr/bin/env bash
-            GRAMMAR_CHECKER="typst-languagetool"
-            OUTPUT_FILE="/tmp/grammar_check_output.txt"
-            ERROR_PATTERN="(info|Failed to compile document)"
+          # Create wrapper script
+          cat > grammar-check-wrapper.sh << 'EOF'
+          #!/usr/bin/env bash
+          GRAMMAR_CHECKER="typst-languagetool"
+          OUTPUT_FILE="/tmp/grammar_check_output.txt"
+          ERROR_PATTERN="(info|Failed to compile document)"
 
-            # Run the grammar checker and capture its output
-            $GRAMMAR_CHECKER "$@" | tee "$OUTPUT_FILE"
+          # Run the grammar checker and capture its output
+          $GRAMMAR_CHECKER "$@" | tee "$OUTPUT_FILE"
 
-            # Check if the output contains any error indicators
-            if grep -Ei "$ERROR_PATTERN" "$OUTPUT_FILE" > /dev/null; then
-                echo "::error::Grammar issues found. Check the output above."
-                exit 1
-            else
-                echo "::notice::No grammar issues detected."
-                exit 0
-            fi
-            EOF
-            chmod +x grammar-check-wrapper.sh
-          
-            # Use the wrapper script
-            nix develop --command bash -c "./grammar-check-wrapper.sh check --bundle --main=main.typ --options=typst_languagetool.json"
+          # Check if the output contains any error indicators
+          if grep -Ei "$ERROR_PATTERN" "$OUTPUT_FILE" > /dev/null; then
+              echo "::error::Grammar issues found. Check the output above."
+              exit 1
+          else
+              echo "::notice::No grammar issues detected."
+              exit 0
+          fi
+          EOF
+          chmod +x grammar-check-wrapper.sh
+        
+          # Use the wrapper script
+          nix develop --command bash -c "./grammar-check-wrapper.sh check --bundle --main=main.typ --options=typst_languagetool.json"

@@ -34,6 +34,7 @@ jobs:
         run: |
           REPO_URL="https://github.com/antonWetzel/typst-languagetool"
           COMMIT_HASH=$(git ls-remote "$REPO_URL" HEAD | cut -f 1)
+          echo "Commit hash: $COMMIT_HASH"
           echo "commit_hash=$COMMIT_HASH" >> $GITHUB_OUTPUT
 
       # Cache Cargo registry and target directories
@@ -48,8 +49,21 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-cargo-
 
-      # Install the grammar checker
+      # Check if the binary is already installed (from cache)
+      - name: Check if binary is cached
+        id: check-binary
+        run: |
+          if command -v typst-languagetool &> /dev/null; then
+            echo "Binary already installed"
+            echo "cached=true" >> $GITHUB_OUTPUT
+          else
+            echo "Binary not found in cache"
+            echo "cached=false" >> $GITHUB_OUTPUT
+          fi
+
+      # Install the grammar checker only if the binary is not cached
       - name: Install dependencies and grammar checker
+        if: steps.check-binary.outputs.cached != 'true'
         run: |
           nix develop --command bash -c "cargo install --git=https://github.com/antonWetzel/typst-languagetool cli --features=bundle"
 

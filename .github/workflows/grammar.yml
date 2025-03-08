@@ -21,7 +21,7 @@ jobs:
 
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main
-      - uses: DeterminateSystems/magic-nix-cache-action@main
+      - uses: DeterminateSystems/flakehub-cache-action@main
 
       - name: Check Nixpkgs inputs
         uses: DeterminateSystems/flake-checker-action@main
@@ -35,7 +35,7 @@ jobs:
             #!/usr/bin/env bash
             GRAMMAR_CHECKER="typst-languagetool"
             OUTPUT_FILE="/tmp/grammar_check_output.txt"
-            ERROR_PATTERN="(info)"
+            ERROR_PATTERN="(info|Failed to compile document)"
 
             # Run the grammar checker and capture its output
             $GRAMMAR_CHECKER "$@" | tee "$OUTPUT_FILE"

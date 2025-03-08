@@ -25,7 +25,7 @@ open_basedir = "/var/www/html/:/tmp/"
 ```
 
 == Deshabilitar el uso de `allow_url_fopen` y `allow_url_include`
-Estas opciones permiten incluir archivos remotos en PHP, lo que puede facilitar ataques de inclusión de archivos remotos (RFI). Se pueden desactivar estas opciones de la siguiente manera:
+Estas opciones permiten incluir archivos remotos en PHP, lo que puede facilitar ataques de inclusión de archivos remotos (RFI). Se pueden desactivar estas opciones de la siguiente maanera:
 
 ```ini
 allow_url_fopen = Off

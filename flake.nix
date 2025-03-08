@@ -26,25 +26,50 @@
           inherit system overlays;
         };
 
-        # Define which Rust version to use
-        rustVersion = pkgs.rust-bin.stable.latest.default;
+        # Package the grammar checker as a derivation
+        typst-languagetool = pkgs.rustPlatform.buildRustPackage {
+          useFetchCargoVendor = true;
+          pname = "typst-languagetool";
+          version = "0.1.0"; # Update this as needed
 
-        # Name of your Rust grammar checker tool
-        grammarCheckerPkg = "typst-languagetool";
-        grammarCheckerUrl = "https://github.com/antonWetzel/typst-languagetool";
+          src = pkgs.fetchFromGitHub {
+            owner = "antonWetzel";
+            repo = "typst-languagetool";
+            rev = "main"; # Replace with specific commit when possible
+            sha256 = "sha256-hnt8zsDSiq2Kt+N1rh1YHXC6VYRbmDxomHDN8CVvs18=";
+          };
+          cargoHash = "sha256-tVbiOjsVGR3JgNIPlYlH56g4VqAKpVdcjh8RkGYIXMk=";
+
+          buildFeatures = ["jar"];
+
+          # Add any native build inputs required
+          nativeBuildInputs = with pkgs; [
+            rust-bin.stable.latest.default
+            pkg-config
+          ];
+
+          # Add any runtime dependencies
+          buildInputs = with pkgs; [
+            openssl
+            jdk
+          ];
+
+          meta = with pkgs.lib; {
+            description = "Typst grammar checker using LanguageTool";
+            homepage = "https://github.com/antonWetzel/typst-languagetool";
+            license = licenses.mit;
+          };
+        };
       in {
+        # Make the package available
+        packages.typst-languagetool = typst-languagetool;
+        packages.default = typst-languagetool;
+
         devShells.default = pkgs.mkShell {
           buildInputs = [
-            # Rust toolchain
-            rustVersion
-            pkgs.cargo-watch
-            pkgs.rust-analyzer
+            self.packages.${system}.typst-languagetool
 
-            # Java and Maven
             pkgs.jdk
-            pkgs.maven
-
-            # Additional dependencies that might be needed
             pkgs.pkg-config
             pkgs.openssl
             pkgs.libiconv
@@ -54,12 +79,10 @@
             echo "Typst Grammar Checking Development Environment"
             echo "--------------------------------------------"
             echo "Available tools:"
-            echo "  - Rust: $(rustc --version)"
-            echo "  - Cargo: $(cargo --version)"
-            echo "  - Maven: $(mvn --version | head -n1)"
+            echo "  - typst-languagetool: $(which typst-languagetool)"
             echo ""
             echo "Usage:"
-            echo "  - Run grammar check: ${grammarCheckerPkg} check --bundle --main=./path/to/main.typ --options=./path/to/options.json"
+            echo "  - Run grammar check: typst-languagetool check --main=./path/to/main.typ --options=./path/to/options.json --jar-location=./path/to/jar"
             echo "--------------------------------------------"
           '';
         };

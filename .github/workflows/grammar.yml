@@ -67,6 +67,49 @@ jobs:
         run: |
           nix develop --command bash -c "cargo install --git=https://github.com/antonWetzel/typst-languagetool cli --features=bundle"
 
+      # Cache LanguageTool
+      - name: Cache LanguageTool
+        id: cache-languagetool
+        uses: actions/cache@v4
+        with:
+          path: LanguageTool
+          key: ${{ runner.os }}-languagetool-20250307
+          restore-keys: |
+            ${{ runner.os }}-languagetool-
+
+      # Install LanguageTool (if not cached)
+      - name: Download and install LanguageTool
+        if: steps.cache-languagetool.outputs.cache-hit != 'true'
+        id: install-languagetool
+        run: |
+          # Download LanguageTool
+          LT_URL="https://internal1.languagetool.org/snapshots/LanguageTool-20250307-snapshot.zip"
+          LT_ZIP="LanguageTool.zip"
+          LT_DIR="LanguageTool"
+
+          echo "Downloading LanguageTool..."
+          curl -L -o "$LT_ZIP" "$LT_URL"
+
+          # Extract LanguageTool
+          echo "Extracting LanguageTool..."
+          mkdir -p "$LT_DIR"
+          unzip -q "$LT_ZIP" -d "$LT_DIR"
+
+          # Clean up
+          rm "$LT_ZIP"
+
+      # Find the .jar file and set it as an environment variable
+      - name: Set LanguageTool .jar path
+        run: |
+          LT_JAR=$(find LanguageTool -name "languagetool-commandline-*.jar" | head -n 1)
+          if [ -z "$LT_JAR" ]; then
+            echo "::error::LanguageTool .jar file not found!"
+            exit 1
+          fi
+
+          echo "LanguageTool .jar path: $LT_JAR"
+          echo "LT_JAR_PATH=$LT_JAR" >> $GITHUB_ENV
+
       - name: Run Grammar Check
         run: |
           # Create wrapper script
@@ -77,7 +120,7 @@ jobs:
           ERROR_PATTERN="(info|Failed to compile document)"
 
           # Run the grammar checker and capture its output
-          $GRAMMAR_CHECKER "$@" | tee "$OUTPUT_FILE"
+          $GRAMMAR_CHECKER "$@" --languagetool-jar "$LT_JAR_PATH" | tee "$OUTPUT_FILE"
 
           # Check if the output contains any error indicators
           if grep -Ei "$ERROR_PATTERN" "$OUTPUT_FILE" > /dev/null; then

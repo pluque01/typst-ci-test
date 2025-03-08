@@ -1,4 +1,4 @@
-#import "@preview/modern-ugr-report:1.0.0": *
+#import "template.typ": *
 
 // use styling for spellcheck only in the spellchecker
 // keep the correct styling in pdf or preview

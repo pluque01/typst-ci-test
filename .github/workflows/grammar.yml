@@ -112,6 +112,7 @@ jobs:
 
       - name: Run Grammar Check
         run: |
+          printf '%s\n' "$LT_JAR_PATH"
           # Create wrapper script
           cat > grammar-check-wrapper.sh << 'EOF'
           #!/usr/bin/env bash

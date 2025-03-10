@@ -120,6 +120,7 @@ jobs:
           ERROR_PATTERN="(info|Failed to compile document)"
 
           # Run the grammar checker and capture its output
+          echo 'jar-location="$LT_JAR_PATH"'
           $GRAMMAR_CHECKER "$@" --jar-location="$LT_JAR_PATH" | tee "$OUTPUT_FILE"
 
           # Check if the output contains any error indicators

@@ -21,6 +21,7 @@ sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/privat
 
 === Configurar Apache para usar HTTPS
 Después de obtener el certificado, es necesario modificar la configuración de Apache para habilitar HTTPS. Para ello, se crea un nuevo `VirtualHost` en el archivo de configuración de Apache.
+Prueba de que el herramienta falla.
 
 Este es un ejemplo de configuración para un `VirtualHost` que escucha en el puerto 443 (HTTPS) y utiliza el certificado autofirmado:
 

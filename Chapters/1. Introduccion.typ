@@ -1,5 +1,7 @@
 = Introducción
 
+Pruebo errores.
+
 En la actualidad, la seguridad en internet es un aspecto fundamental para cualquier empresa, organización o usuario que administre un sitio web. Los servidores web, encargados de gestionar y distribuir el contenido en la red, son uno de los principales objetivos de los ciberdelincuentes. Ataques como inyecciones de código, accesos no autorizados, ataques de denegación de servicio (DDoS) y robo de información son algunas de las amenazas que pueden comprometer la estabilidad y la seguridad de un servidor web mal configurado. @cenzic2014
 
 Apache es uno de los servidores web más utilizados en el mundo gracias a su código abierto, flexibilidad y amplia comunidad de soporte. Sin embargo, su popularidad también lo convierte en un blanco frecuente de ataques. Para garantizar su funcionamiento seguro, es imprescindible implementar configuraciones adecuadas, reforzar el acceso a los datos y aplicar medidas de protección contra posibles vulnerabilidades.

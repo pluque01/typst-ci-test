@@ -65,7 +65,7 @@ jobs:
       - name: Install dependencies and grammar checker
         if: steps.check-binary.outputs.cached != 'true'
         run: |
-          nix develop --command bash -c "cargo install --git=https://github.com/antonWetzel/typst-languagetool cli --features=bundle"
+          nix develop --command bash -c "cargo install --git=https://github.com/antonWetzel/typst-languagetool cli --features=jar"
 
       # Cache LanguageTool
       - name: Cache LanguageTool
@@ -120,8 +120,8 @@ jobs:
           ERROR_PATTERN="(info|Failed to compile document)"
 
           # Run the grammar checker and capture its output
-          echo 'jar-location="$LT_JAR_PATH"'
-          $GRAMMAR_CHECKER "$@" --jar-location="$LT_JAR_PATH" | tee "$OUTPUT_FILE"
+          echo 'jar-location=$LT_JAR_PATH'
+          $GRAMMAR_CHECKER "$@" --jar-location=$LT_JAR_PATH | tee "$OUTPUT_FILE"
 
           # Check if the output contains any error indicators
           if grep -Ei "$ERROR_PATTERN" "$OUTPUT_FILE" > /dev/null; then

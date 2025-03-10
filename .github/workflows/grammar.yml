@@ -136,4 +136,4 @@ jobs:
           chmod +x grammar-check-wrapper.sh
           
           # Use the wrapper script
-          nix develop --command bash -c "LT_JAR_PATH='$LT_JAR_PATH' ./grammar-check-wrapper.sh check --bundle --main=main.typ --options=typst_languagetool.json"
+          nix develop --command bash -c "LT_JAR_PATH='$LT_JAR_PATH' ./grammar-check-wrapper.sh check --main=main.typ --options=typst_languagetool.json"

@@ -119,11 +119,11 @@ jobs:
           GRAMMAR_CHECKER="typst-languagetool"
           OUTPUT_FILE="/tmp/grammar_check_output.txt"
           ERROR_PATTERN="(info|Failed to compile document)"
-
+      
           # Run the grammar checker and capture its output
-          echo 'jar-location=$LT_JAR_PATH'
+          echo "jar-location=$LT_JAR_PATH"
           $GRAMMAR_CHECKER "$@" --jar-location=$LT_JAR_PATH | tee "$OUTPUT_FILE"
-
+      
           # Check if the output contains any error indicators
           if grep -Ei "$ERROR_PATTERN" "$OUTPUT_FILE" > /dev/null; then
               echo "::error::Grammar issues found. Check the output above."
@@ -134,6 +134,6 @@ jobs:
           fi
           EOF
           chmod +x grammar-check-wrapper.sh
-        
+          
           # Use the wrapper script
-          nix develop --command bash -c "./grammar-check-wrapper.sh check --bundle --main=main.typ --options=typst_languagetool.json"
+          nix develop --command bash -c "LT_JAR_PATH='$LT_JAR_PATH' ./grammar-check-wrapper.sh check --bundle --main=main.typ --options=typst_languagetool.json"

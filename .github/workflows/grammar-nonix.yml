@@ -53,12 +53,6 @@ jobs:
       with:
         path: ~/.cargo/bin
         key: ${{ runner.os }}-rust-package-${{ hashFiles('**/Cargo.toml') }}
-        
-    # Install your Rust package that needs Java/Maven (Replace with your actual package name)
-    - name: Install Rust package
-      run: cargo install your_rust_package
-      # Skip installation if the package is already cached
-      if: steps.package-cache.outputs.cache-hit != 'true'
 
     # Install your Rust package (Replace with your actual package name)
     - name: Install Rust package

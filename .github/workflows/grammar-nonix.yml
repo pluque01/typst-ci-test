@@ -33,18 +33,10 @@ jobs:
 
     # Set up Rust with caching
     - name: Install Rust toolchain
-      uses: actions-rs/toolchain@v1
+      uses: actions-rust-lang/setup-rust-toolchain@v1
       with:
-        profile: minimal
         toolchain: stable
         override: true
-
-    # Cache Rust dependencies
-    - name: Cache Rust dependencies
-      uses: Swatinem/rust-cache@v2
-      with:
-        # Optional: cache key prefix
-        prefix-key: "rust-cache"
     
     # Cache the Rust package itself to avoid reinstalling
     - name: Cache Rust package

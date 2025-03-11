@@ -48,27 +48,27 @@ jobs:
       if: steps.rust-cache.outputs.cache-hit != 'true'
 
     - name: Run Grammar Check
-        run: |
-          # Create wrapper script
-          cat > grammar-check-wrapper.sh << 'EOF'
-          #!/usr/bin/env bash
-          GRAMMAR_CHECKER="typst-languagetool"
-          OUTPUT_FILE="/tmp/grammar_check_output.txt"
-          ERROR_PATTERN="(info|Failed to compile document)"
+      run: |
+        # Create wrapper script
+        cat > grammar-check-wrapper.sh << 'EOF'
+        #!/usr/bin/env bash
+        GRAMMAR_CHECKER="typst-languagetool"
+        OUTPUT_FILE="/tmp/grammar_check_output.txt"
+        ERROR_PATTERN="(info|Failed to compile document)"
       
-          # Run the grammar checker and capture its output
-          $GRAMMAR_CHECKER "$@" --bundle | tee "$OUTPUT_FILE"
+        # Run the grammar checker and capture its output
+        $GRAMMAR_CHECKER "$@" --bundle | tee "$OUTPUT_FILE"
       
-          # Check if the output contains any error indicators
-          if grep -Ei "$ERROR_PATTERN" "$OUTPUT_FILE" > /dev/null; then
-              echo "::error::Grammar issues found. Check the output above."
-              exit 1
-          else
-              echo "::notice::No grammar issues detected."
-              exit 0
-          fi
-          EOF
-          chmod +x grammar-check-wrapper.sh
+        # Check if the output contains any error indicators
+        if grep -Ei "$ERROR_PATTERN" "$OUTPUT_FILE" > /dev/null; then
+            echo "::error::Grammar issues found. Check the output above."
+            exit 1
+        else
+            echo "::notice::No grammar issues detected."
+            exit 0
+        fi
+        EOF
+        chmod +x grammar-check-wrapper.sh
           
-          # Use the wrapper script
-          ./grammar-check-wrapper.sh check --main=main.typ --options=typst_languagetool.json"
+        # Use the wrapper script
+        ./grammar-check-wrapper.sh check --main=main.typ --options=typst_languagetool.json"

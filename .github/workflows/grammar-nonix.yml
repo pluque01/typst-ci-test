@@ -84,4 +84,4 @@ jobs:
           chmod +x grammar-check-wrapper.sh
           
           # Use the wrapper script
-          ./grammar-check-wrapper.sh check --main=main.typ --options=typst_languagetool.json"
+          ./grammar-check-wrapper.sh check --main=main.typ --options=typst_languagetool.json

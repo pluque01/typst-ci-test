@@ -43,7 +43,9 @@ jobs:
       id: package-cache
       uses: actions/cache@v3
       with:
-        path: ~/.cargo/bin
+        path: | 
+          ~/.cargo/bin
+          ~/.m2/repository/invalid/typst-languagetool/
         key: ${{ runner.os }}-rust-package-v1
 
     # Install your Rust package (Replace with your actual package name)

@@ -44,13 +44,13 @@ jobs:
       uses: actions/cache@v3
       with:
         path: ~/.cargo/bin
-        key: ${{ runner.os }}-rust-package-${{ hashFiles('**/Cargo.toml') }}
+        key: ${{ runner.os }}-rust-package-v1
 
     # Install your Rust package (Replace with your actual package name)
     - name: Install Rust package
       run: cargo install --git=https://github.com/antonWetzel/typst-languagetool cli --features=bundle
       # Skip installation if the package is already cached
-      if: steps.rust-cache.outputs.cache-hit != 'true'
+      if: steps.package-cache.outputs.cache-hit != 'true'
 
     - name: Run Grammar Check
       run: |

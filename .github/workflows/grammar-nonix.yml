@@ -24,7 +24,12 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: '17'
-        cache: 'maven'
+    
+    # Install Maven
+    - name: Set up Maven
+      uses: stCarolas/setup-maven@v5
+      with:
+        maven-version: '3.8.6'
 
     # Set up Rust with caching
     - name: Install Rust toolchain
@@ -40,6 +45,20 @@ jobs:
       with:
         # Optional: cache key prefix
         prefix-key: "rust-cache"
+    
+    # Cache the Rust package itself to avoid reinstalling
+    - name: Cache Rust package
+      id: package-cache
+      uses: actions/cache@v3
+      with:
+        path: ~/.cargo/bin
+        key: ${{ runner.os }}-rust-package-${{ hashFiles('**/Cargo.toml') }}
+        
+    # Install your Rust package that needs Java/Maven (Replace with your actual package name)
+    - name: Install Rust package
+      run: cargo install your_rust_package
+      # Skip installation if the package is already cached
+      if: steps.package-cache.outputs.cache-hit != 'true'
 
     # Install your Rust package (Replace with your actual package name)
     - name: Install Rust package

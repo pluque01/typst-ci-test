@@ -1,4 +1,4 @@
-name: Check Typst grammar with LanguageTool
+name: Typst Tasks
 
 on:
   push:
@@ -12,7 +12,21 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  compile:
+    name: Compiles the typst project into a PDF
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: typst-community/setup-typst@v4
+      - run: typst compile paper.typ paper.pdf
+      - uses: actions/upload-artifact@v4
+        with:
+          name: paper
+          path: paper.pdf
+    
+  grammar:
+    name: Checks the grammar with LanguageTool
+    needs: compile
     runs-on: ubuntu-latest
 
     steps:
@@ -46,7 +60,7 @@ jobs:
         path: | 
           ~/.cargo/bin
           ~/.m2/repository/invalid/typst-languagetool/
-        key: ${{ runner.os }}-rust-package-v1
+        key: ${{ runner.os }}-typst-languagetool-v1
 
     # Install your Rust package (Replace with your actual package name)
     - name: Install Rust package

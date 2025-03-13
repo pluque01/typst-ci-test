@@ -6,6 +6,8 @@ Antes de habilitar HTTPS, es necesario asegurarse de que el módulo SSL está in
 
 Se puede ejecutar el siguiente comando para verificar si SSL está habilitado en Apache:
 
+Ejemplo para David.
+
 ```bash
 apachectl -M | grep ssl
 ```

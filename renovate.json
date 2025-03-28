@@ -2,5 +2,16 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended"
+  ],
+  "customManagers": [
+    {
+      "fileMatch": ["\\.github/workflows/.*\\.ya?ml$"],
+      "matchStrings": [
+        "maven-version:\\s*\"?(?<currentValue>.*?)\"?"
+      ],
+      "datasourceTemplate": "maven",
+      "depNameTemplate": "org.apache.maven:maven",
+      "versioningTemplate": "maven"
+    }
   ]
 }

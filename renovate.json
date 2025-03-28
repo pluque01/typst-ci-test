@@ -5,7 +5,10 @@
   ],
   "customManagers": [
     {
-      "fileMatch": ["\\.github/workflows/.*\\.ya?ml$"],
+      "customType": "regex",
+      "fileMatch": [
+        "\\.github/workflows/.*\\.ya?ml$"
+      ],
       "matchStrings": [
         "maven-version:\\s*\"?(?<currentValue>.*?)\"?"
       ],

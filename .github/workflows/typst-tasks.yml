@@ -16,7 +16,7 @@ jobs:
     name: Compiles the typst project into a PDF
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: typst-community/setup-typst@v4
       - run: typst compile main.typ paper.pdf
       - uses: actions/upload-artifact@v4
@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
 
     # Set up Java with caching
     - name: Set up JDK 17

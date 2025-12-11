@@ -56,7 +56,7 @@ jobs:
 
       # Cache Cargo registry and target directories
       - name: Cache Cargo dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ~/.cargo/registry
@@ -87,7 +87,7 @@ jobs:
       # Cache LanguageTool
       - name: Cache LanguageTool
         id: cache-languagetool
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: LanguageTool
           key: ${{ runner.os }}-languagetool-20250307

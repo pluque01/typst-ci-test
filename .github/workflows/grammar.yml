@@ -21,7 +21,7 @@ jobs:
 
       - name: Install Nix
         uses: nixbuild/nix-quick-install-action@v34
-      - uses: nix-community/cache-nix-action@v6
+      - uses: nix-community/cache-nix-action@v7
         with:
           # restore and save a cache using this key
           primary-key: nix-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}
